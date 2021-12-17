@@ -4,7 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.js": [
+      "standard --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "repository": {
     "type": "git",
@@ -17,6 +29,8 @@
   },
   "homepage": "https://github.com/jonathanmachado/clean-node-api#readme",
   "devDependencies": {
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.2",
     "standard": "^16.0.4"
   }
 }
