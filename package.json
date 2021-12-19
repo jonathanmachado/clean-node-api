@@ -10,7 +10,7 @@
     "test": "jest",
     "test:staged": "jest --passWithNoTests --findRelatedTests --silent --noStackTrace",
     "test:watch": "jest --watch --silent --noStackTrace",
-    "test:ci": "jest --coverage",
+    "test:ci": "jest --coverage --silent --noStackTrace",
     "prepare": "husky install"
   },
   "repository": {
