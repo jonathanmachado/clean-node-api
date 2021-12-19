@@ -6,12 +6,26 @@ const ServerError = require('../helpers/server-error.js')
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCase()
+  const emailValidatorSpy = makeEmailValidator()
   authUseCaseSpy.accessToken = 'valid_token'
-  const sut = new LoginRouter(authUseCaseSpy)
+  const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
   return {
     sut,
-    authUseCaseSpy
+    authUseCaseSpy,
+    emailValidatorSpy
   }
+}
+
+const makeEmailValidator = () => {
+  class EmailValidatorSpy {
+    isValid (email) {
+      this.email = email
+      return this.isEmailValid
+    }
+  }
+  const emailValidatorSpy = new EmailValidatorSpy()
+  emailValidatorSpy.isEmailValid = true
+  return emailValidatorSpy
 }
 
 const makeAuthUseCaseWithError = () => {
@@ -154,8 +168,9 @@ describe('Login Route', () => {
     expect(httpResponse.statusCode).toBe(500)
   })
 
-  test.skip('Should return 400 if an invalid email is provided', async () => {
-    const { sut } = makeSut() // sut = system under test
+  test('Should return 400 if an invalid email is provided', async () => {
+    const { sut, emailValidatorSpy } = makeSut() // sut = system under test
+    emailValidatorSpy.isEmailValid = false
     const httpRequest = {
       body: {
         email: 'invalid_email@mail.com',
