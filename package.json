@@ -5,11 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "prepare": "husky install"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jonathanmachado/clean-node-api.git"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
   },
   "author": "",
   "license": "ISC",
