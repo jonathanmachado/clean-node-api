@@ -2,11 +2,22 @@ const LoginRouter = require('./login-router.js')
 const MissingParamError = require('../helpers/missing-params-error.js')
 
 const makeSut = () => {
-  return new LoginRouter()
+  class AuthUseCaseSpy {
+    auth (email, password) {
+      this.email = email
+      this.password = password
+    }
+  }
+  const authUseCaseSpy = new AuthUseCaseSpy()
+  const sut = new LoginRouter(authUseCaseSpy)
+  return {
+    sut,
+    authUseCaseSpy
+  }
 }
 describe('Login Route', () => {
   test('Should return 400 if no email is provided', () => {
-    const sut = makeSut() // sut = system under test
+    const { sut } = makeSut() // sut = system under test
     const httpRequest = {
       body: {
         password: 'any_password'
@@ -18,7 +29,7 @@ describe('Login Route', () => {
   })
 
   test('Should return 400 if no password is provided', () => {
-    const sut = makeSut() // sut = system under test
+    const { sut } = makeSut() // sut = system under test
     const httpRequest = {
       body: {
         email: 'any_email'
@@ -30,14 +41,27 @@ describe('Login Route', () => {
   })
 
   test('Should return 500 if no httpRequest is provided', () => {
-    const sut = makeSut() // sut = system under test
+    const { sut } = makeSut() // sut = system under test
     const httpResponse = sut.route()
     expect(httpResponse.statusCode).toBe(500)
   })
 
   test('Should return 500 if no httpRequest has no body', () => {
-    const sut = makeSut() // sut = system under test
+    const { sut } = makeSut() // sut = system under test
     const httpResponse = sut.route({})
     expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('Should call AuthUseCase with correct params', () => {
+    const { sut, authUseCaseSpy } = makeSut() // sut = system under test
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+    sut.route(httpRequest)
+    expect(authUseCaseSpy.email).toBe(httpRequest.body.email)
+    expect(authUseCaseSpy.password).toBe(httpRequest.body.password)
   })
 })
