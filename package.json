@@ -7,10 +7,11 @@
   "main": "index.js",
   
   "scripts": {
-    "test": "jest",
-    "test:staged": "jest --passWithNoTests --findRelatedTests --silent --noStackTrace",
-    "test:watch": "jest --watch --silent --noStackTrace",
-    "test:ci": "jest --coverage --silent --noStackTrace",
+    "test": "jest --silent --noStackTrace --passWithNoTests",
+    "test:unit": "yarn test -- --watch",
+    "test:staged": "yarn test -- --findRelatedTests",
+    "test:watch": "yarn test -- --watch",
+    "test:ci": "yarn test -- --coverage",
     "prepare": "husky install"
   },
   "repository": {
